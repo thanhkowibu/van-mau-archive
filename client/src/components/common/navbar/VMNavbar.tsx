@@ -2,12 +2,14 @@ import { useState } from "react";
 import LoginModal from "../modal/LoginModal";
 import RegisterModal from "../modal/RegisterModal";
 import { useAuth } from "../../../context/useAuth";
+import CreatePostModal from "../modal/CreatePostModal";
 
 type Props = {};
 
 const VMNavbar: React.FC<Props> = ({}) => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
 
   const { user, setUser } = useAuth();
 
@@ -29,6 +31,10 @@ const VMNavbar: React.FC<Props> = ({}) => {
         </a>
         <div className="flex gap-6 md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           <button
+            onClick={() => {
+              if (!user) setIsLoginOpen(true);
+              else setIsCreatePostOpen(true);
+            }}
             type="button"
             className="text-white focus:outline-none font-medium rounded-lg text-sm px-2 py-2 text-center bg-slate-800 border-2 border-slate-700 hover:bg-slate-900"
           >
@@ -112,6 +118,10 @@ const VMNavbar: React.FC<Props> = ({}) => {
         isOpen={isRegisterOpen}
         setIsOpen={setIsRegisterOpen}
         setOtherOpen={setIsLoginOpen}
+      />
+      <CreatePostModal
+        isOpen={isCreatePostOpen}
+        setIsOpen={setIsCreatePostOpen}
       />
     </nav>
   );

@@ -40,7 +40,7 @@ const CardList: React.FC<Props> = ({}) => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {grid.map((column, columnIndex) => (
-            <div key={columnIndex} className="grid gap-4">
+            <div key={columnIndex} className="grid gap-8">
               {column.map((post) => (
                 <SingleCard
                   key={post.id}

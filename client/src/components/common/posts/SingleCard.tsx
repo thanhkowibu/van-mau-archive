@@ -21,7 +21,7 @@ const SingleCard: React.FC<Props> = ({ content, tags, username }) => {
   };
 
   return (
-    <div className=" bg-[#1E293B] px-5 py-3 rounded-xl w-96 overflow-hidden flex flex-col gap-3">
+    <div className=" bg-[#1E293B] px-5 py-3 rounded-xl w-96 overflow-hidden flex flex-col gap-3 h-min">
       <div className="flex justify-between">
         <div className="text-gray-500 text-sm tracking-wide">@{username}</div>
         <button
