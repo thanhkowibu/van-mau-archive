@@ -49,3 +49,43 @@ export const serviceUpdatePost = async (
 
   return db.query(updateQuery, [content, tags, id, userId]);
 };
+
+export const serviceSearchPosts = async (
+  searchTerm: string,
+  searchTagArray: string[]
+) => {
+  let q = `
+    SELECT p.*, u.username,
+           ts_rank(to_tsvector('english', p.content), to_tsquery('english', $1)) AS rank
+    FROM vm_posts p 
+    JOIN vm_users u ON p.uid = u.id
+    WHERE to_tsvector('english', p.content) @@ to_tsquery('english', $1)
+    AND p.tags @> $2::text[]
+    ORDER BY rank DESC
+  `;
+
+  if (!searchTerm) {
+    q = `
+    SELECT p.*, u.username
+    FROM vm_posts p 
+    JOIN vm_users u ON p.uid = u.id
+    WHERE p.tags @> $1::text[]
+    ORDER BY p.id DESC
+  `;
+    return db.query(q, [searchTagArray]);
+  }
+
+  if (searchTagArray.length === 0) {
+    q = `
+    SELECT p.*, u.username,
+           ts_rank(to_tsvector('english', p.content), to_tsquery('english', $1)) AS rank
+    FROM vm_posts p 
+    JOIN vm_users u ON p.uid = u.id
+    WHERE to_tsvector('english', p.content) @@ to_tsquery('english', $1)
+    ORDER BY rank DESC
+  `;
+    return db.query(q, [searchTerm]);
+  }
+
+  return db.query(q, [searchTerm, searchTagArray]);
+};

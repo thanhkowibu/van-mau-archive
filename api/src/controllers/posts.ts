@@ -3,6 +3,7 @@ import {
   serviceCreatePost,
   serviceDeletePost,
   serviceGetPosts,
+  serviceSearchPosts,
   serviceUpdatePost,
 } from "../services/postsServices";
 
@@ -49,5 +50,22 @@ export const updatePost = async (req: Request, res: Response) => {
     res.status(200).json("Updated successfully");
   } catch (err) {
     res.status(403).json(err);
+  }
+};
+
+export const searchPosts = async (req: Request, res: Response) => {
+  const { searchTerm, searchTags } = req.body;
+
+  if (!searchTerm && (!searchTags || searchTags.length === 0)) {
+    return res
+      .status(400)
+      .json({ error: "Both searchTerm and searchTags cannot be empty" });
+  }
+
+  try {
+    const data = await serviceSearchPosts(searchTerm, searchTags);
+    res.status(200).json(data.rows);
+  } catch (err) {
+    res.status(500).json(err);
   }
 };
