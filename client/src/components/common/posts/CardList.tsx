@@ -38,15 +38,17 @@ const CardList: React.FC<Props> = ({}) => {
       {loading ? (
         <div className="text-gray-300">is loading...</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-max">
           {grid.map((column, columnIndex) => (
-            <div key={columnIndex} className="grid gap-8">
+            <div key={columnIndex} className="flex flex-col gap-8">
               {column.map((post) => (
                 <SingleCard
                   key={post.id}
                   content={post.content}
                   tags={post.tags}
                   username={post.username}
+                  uid={post.uid}
+                  id={post.id}
                 />
               ))}
             </div>

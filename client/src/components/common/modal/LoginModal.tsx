@@ -49,7 +49,7 @@ const LoginModal: React.FC<Props> = ({ isOpen, setIsOpen, setOtherOpen }) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (loading) return;
 
-    console.log(values);
+    // console.log(values);
     setLoading(true);
     try {
       const { email, password } = values;

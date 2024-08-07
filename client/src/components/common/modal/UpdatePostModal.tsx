@@ -9,69 +9,90 @@ import {
   FormLabel,
   FormMessage,
 } from "../../ui/form";
-import { Input } from "../../ui/input";
+import { Textarea } from "../../ui/textarea";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import useAuthApi from "../../../api/modules/auth.api";
 import { cn } from "../../../lib/utils";
+import TagsInput from "../input/TagsInput";
+import usePostApi from "../../../api/modules/post.api";
 
 type Props = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setOtherOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  initialContent: string;
+  initialTags: string[];
+  id: number;
 };
 
-const RegisterModal: React.FC<Props> = ({
+const UpdatePostModal: React.FC<Props> = ({
   isOpen,
   setIsOpen,
-  setOtherOpen,
+  initialContent,
+  initialTags,
+  id,
 }) => {
   const [loading, setLoading] = useState(false);
+  const [tags, setTags] = useState<string[]>(initialTags);
 
-  const { register } = useAuthApi();
+  const { updatePost } = usePostApi();
+
+  const minWordValidate = (minWords: number) => {
+    return z.string().refine(
+      (value) => {
+        const wordCount = value.trim().split(/\s+/).length;
+        return wordCount >= minWords;
+      },
+      {
+        message: `Text must be longer than ${minWords} words`,
+      }
+    );
+  };
 
   const formSchema = z.object({
-    username: z
-      .string()
-      .min(2, {
-        message: "Username must be at least 2 characters.",
-      })
-      .max(20, {
-        message: "Username must be at most 20 characters.",
-      }),
-    email: z.string().min(1, {
-      message: "Email is required",
-    }),
-    password: z.string().min(8, {
-      message: "Password must be at least 8 characters.",
-    }),
+    content: minWordValidate(20),
+    tags: z.array(z.string()),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
-      email: "",
-      password: "",
+      content: initialContent,
+      tags: [],
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (loading) return;
+    values.tags = tags;
+    if (tags.length < 1) {
+      toast.error("Need at least 1 tag");
+      return;
+    }
+    if (tags.length > 3) {
+      toast.error("Accept at most 3 tags");
+      return;
+    }
 
-    // console.log(values);
+    console.log(values);
     setLoading(true);
     try {
-      const { username, email, password } = values;
-      const res = await register(username, email, password);
-      console.log(res.data);
-      toast.success("Register successfully");
+      const { content, tags } = values;
+      const res = await updatePost(id, content, tags);
+      toast.success(res.data);
       setIsOpen(false);
+      setTags([]);
       form.reset();
+      window.location.reload();
     } catch (err: any) {
       toast.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
     }
   };
 
@@ -86,14 +107,14 @@ const RegisterModal: React.FC<Props> = ({
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative p-4 w-full max-w-lg max-h-full"
+            className="relative p-4 w-full max-w-3xl max-h-full"
           >
             {/* Modal content */}
             <div className="relative rounded-lg shadow bg-gray-700">
               {/* Modal header */}
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-600">
                 <h3 className="text-xl font-semibold text-white">
-                  Sign up to our platform
+                  Write your copypasta🔥🔥✍️
                 </h3>
                 <button
                   onClick={() => setIsOpen(false)}
@@ -125,20 +146,22 @@ const RegisterModal: React.FC<Props> = ({
                   <form
                     className="space-y-6"
                     onSubmit={form.handleSubmit(onSubmit)}
+                    onKeyDown={handleKeyDown}
                   >
                     <FormField
                       control={form.control}
-                      name="username"
+                      name="content"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="block mb-2 text-sm font-medium text-white text-start">
-                            Username
+                            Content
                           </FormLabel>
                           <FormControl>
-                            <Input
+                            <Textarea
                               {...field}
-                              className="text-sm rounded-lg block w-full p-2.5 bg-gray-600 border-gray-500 focus:border-gray-600 placeholder-gray-400 text-white ring-offset-gray-400"
-                              placeholder="Username"
+                              className="text-sm rounded-lg block w-full h-80 p-2.5 bg-gray-600 border-gray-500 focus:border-gray-600 placeholder-gray-400 text-white ring-offset-gray-400"
+                              placeholder="OH NAGI-CHAMA, CAN I ASK YOU A FAVOR🥺PLEASE LET ME HAVE A TASTE OF YOUR FINEST TEA🤤N-NO, I DON’T MEAN THOSE TEA, I MEAN YOUR TEA😤I WANT TO ENJOY EVERY SINGLE DROP WHILE INHALING THAT SWEET AROMA🥵😤🤤AND MAYBE EVEN GO THROUGH THAT BLACK TIGHT FILTER WOULD BE THE BEST😍AAAAAHHHHH🤤🤤🤤I CAN ALREADY IMAGINE SO MANY OF NAGI-CHAMA TASTE IN MY MOUTH🥵🥵🥵🥵😳😳😳😳😳e-etou, Nagi-chama😦w-why is your face suddenly go super scary😧I-I don’t like the look of your eyes right now😰e-eh😨eh😨eh😨eh😨eh😨eh😨p-please, calm down😣don’t move that fast, you’re gonna drip😵‍💫I-I know you’re angry at me bu- w-w-wait, y-you’re so strong😨😨w-w-WAIT, NAGI-CHAMA WHY ARE YOU SUDDEN- 😱😱😱😱😱😶😶😶😶😶😶😶
+HHHHHHHHHHHHHHHHHRRRRRRRRRRRRRRRMMMMMMMMMMMMMMMMMMMPPPPPPPPPPPPPPPPPPPPPPPPPPPPP😳😳😳HMRP😵‍💫😵‍💫😵‍💫GLUCK🫖GLUCK🫖GLUCK🫖CHOKE😫GLUCK🍵GLUCK🍵GLUCK🍵CHOKE😫GLUCK🍵SLURP😋SLURP😋SLURP😋CHOKE😫GLUCK🫖GLUCK🍵GLUCKCHOKE😫CHOKE😫GLUCK🫖SLURP😋GLUCK🍵GLUCK🫖CHOKE😫SLURP😋CHOKE😫CHOKE😫SLURP"
                             />
                           </FormControl>
                           <FormMessage />
@@ -147,47 +170,18 @@ const RegisterModal: React.FC<Props> = ({
                     />
                     <FormField
                       control={form.control}
-                      name="email"
-                      render={({ field }) => (
+                      name="tags"
+                      render={() => (
                         <FormItem>
                           <FormLabel className="block mb-2 text-sm font-medium text-white text-start">
-                            Email
+                            Tags
                           </FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              type="email"
-                              className="text-sm rounded-lg block w-full p-2.5 bg-gray-600 border-gray-500 focus:border-gray-600 placeholder-gray-400 text-white ring-offset-gray-400"
-                              placeholder="name@company.com"
-                            />
-                          </FormControl>
+                          <TagsInput tags={tags} setTags={setTags} />
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="block mb-2 text-sm font-medium text-white text-start">
-                            Password
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              type="password"
-                              placeholder="••••••••"
-                              className="text-sm rounded-lg block w-full p-2.5 bg-gray-600 border-gray-500 focus:border-gray-600 placeholder-gray-400 text-white ring-offset-gray-400"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
                     <button
-                      type="submit"
                       className={cn(
                         "w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-sky-500 hover:bg-sky-600",
                         {
@@ -197,21 +191,8 @@ const RegisterModal: React.FC<Props> = ({
                       )}
                       disabled={loading}
                     >
-                      Create your new account
+                      Update
                     </button>
-                    <div className="text-sm font-medium text-gray-300">
-                      Already have an account?{" "}
-                      <a
-                        href="#"
-                        onClick={() => {
-                          setIsOpen(false);
-                          setOtherOpen(true);
-                        }}
-                        className="text-sky-300 hover:underline"
-                      >
-                        Login
-                      </a>
-                    </div>
                   </form>
                 </Form>
               </div>
@@ -223,4 +204,4 @@ const RegisterModal: React.FC<Props> = ({
   );
 };
 
-export default RegisterModal;
+export default UpdatePostModal;
