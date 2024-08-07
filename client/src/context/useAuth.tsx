@@ -9,6 +9,9 @@ export const GlobalContext = createContext({} as ContextProps);
 
 export const GlobalContextProvider = ({ children }: ContextProviderProps) => {
   const [user, setUser] = useState<UserProps | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTags, setSearchTags] = useState<string[]>([]);
+  const [searchTrigger, setSearchTrigger] = useState(0);
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -19,8 +22,27 @@ export const GlobalContextProvider = ({ children }: ContextProviderProps) => {
     }
   }, []);
 
+  const triggerSearch = () => {
+    if (searchTerm === "" && searchTags.length === 0) {
+      setSearchTrigger(0);
+    } else {
+      setSearchTrigger((prev) => prev + 1); // Increment to trigger a search
+    }
+  };
+
   return (
-    <GlobalContext.Provider value={{ user, setUser }}>
+    <GlobalContext.Provider
+      value={{
+        user,
+        setUser,
+        searchTerm,
+        setSearchTerm,
+        searchTags,
+        setSearchTags,
+        triggerSearch,
+        searchTrigger,
+      }}
+    >
       {children}
     </GlobalContext.Provider>
   );

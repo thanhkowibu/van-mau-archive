@@ -31,7 +31,21 @@ const usePostApi = () => {
     });
   };
 
-  return { getPosts, addPost, deletePost, updatePost, getProtectedPosts };
+  const searchPosts = async (searchTerm: string, searchTags: string[]) => {
+    return privateClient.post("posts/search", {
+      searchTerm,
+      searchTags,
+    });
+  };
+
+  return {
+    getPosts,
+    addPost,
+    deletePost,
+    updatePost,
+    getProtectedPosts,
+    searchPosts,
+  };
 };
 
 export default usePostApi;

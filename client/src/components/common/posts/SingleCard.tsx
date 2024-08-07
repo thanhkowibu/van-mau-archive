@@ -25,6 +25,12 @@ const SingleCard: React.FC<Props> = ({ content, tags, username, uid, id }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
+  const { searchTags, setSearchTags } = useAuth();
+
+  const handleAddTag = (newTag: string) => {
+    setSearchTags([...searchTags, newTag]);
+  };
+
   const handleCopy = () => {
     navigator.clipboard
       .writeText(content)
@@ -37,7 +43,7 @@ const SingleCard: React.FC<Props> = ({ content, tags, username, uid, id }) => {
   };
 
   return (
-    <div className=" bg-[#1E293B] px-5 py-3 rounded-xl w-96 overflow-hidden flex flex-col gap-3 h-min">
+    <div className=" bg-[#1E293B] px-5 py-3 rounded-xl md:w-96 overflow-hidden flex flex-col gap-3 h-min">
       <div className="flex justify-between">
         <div className="text-gray-500 text-sm tracking-wide">@{username}</div>
         <div className="flex flex-row-reverse items-start gap-3">
@@ -69,11 +75,12 @@ const SingleCard: React.FC<Props> = ({ content, tags, username, uid, id }) => {
           )}
         </div>
       </div>
-      <div className="text-sky-300 text-sm flex gap-2">
+      <div className="text-sky-300 text-sm flex gap-2 w-[294px] md:w-auto overflow-x-scroll scrollbar-hidden">
         {tags.map((tag, idx) => (
           <div
+            onClick={() => handleAddTag(tag)}
             key={idx}
-            className="rounded-full px-2 py-1 bg-sky-600/30 font-semibold"
+            className="rounded-full px-2 py-1 bg-sky-600/30 hover:bg-sky-600/60 cursor-pointer font-semibold"
           >
             #{tag}
           </div>

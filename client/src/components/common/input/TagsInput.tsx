@@ -34,7 +34,7 @@ const TagsInput: React.FC<Props> = ({ tags, setTags }) => {
                 #{tag}
                 <button
                   type="button"
-                  className="absolute -top-1 -right-1"
+                  className="absolute -top-1 -right-1 hover:brightness-125"
                   onClick={() => removeTags(idx)}
                 >
                   <IoMdCloseCircle size={16} />
