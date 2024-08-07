@@ -1,7 +1,7 @@
 // private.client.ts
 import axios from "axios";
 
-const baseURL = "http://localhost:5000/api/v1/";
+const baseURL = import.meta.env.VITE_BASE_URL;
 
 const privateClient = axios.create({
   baseURL,
