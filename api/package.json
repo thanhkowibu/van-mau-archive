@@ -1,9 +1,14 @@
 {
   "name": "van-mau-archive",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/index.ts",
   "scripts": {
-    "dev": "nodemon --config nodemon.json src/index.ts"
+    "dev": "nodemon --config nodemon.json src/index.ts",
+    "start": "ts-node src/index.ts",
+    "build": "tsc",
+    "lint": "eslint --fix src test",
+    "test": "jest",
+    "vercel-build": "echo hello"
   },
   "author": "thanhkowibu",
   "license": "ISC",
