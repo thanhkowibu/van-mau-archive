@@ -19,9 +19,6 @@ function App() {
     <ToasterProvider>
       <GlobalContextProvider>
         <VMNavbar />
-        {/* <button onClick={handleClick} className="size-8 bg-white">
-          Get
-        </button> */}
         <CardList />
       </GlobalContextProvider>
     </ToasterProvider>
