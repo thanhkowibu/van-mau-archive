@@ -36,20 +36,10 @@ const UpdatePostModal: React.FC<Props> = ({
 
   const { updatePost } = usePostApi();
 
-  const minWordValidate = (minWords: number) => {
-    return z.string().refine(
-      (value) => {
-        const wordCount = value.trim().split(/\s+/).length;
-        return wordCount >= minWords;
-      },
-      {
-        message: `Text must be longer than ${minWords} words`,
-      }
-    );
-  };
-
   const formSchema = z.object({
-    content: minWordValidate(20),
+    content: z.string().min(1, {
+      message: "Content is required",
+    }),
     tags: z.array(z.string()),
   });
 
