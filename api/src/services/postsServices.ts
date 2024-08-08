@@ -3,7 +3,8 @@ import db from "../db/index";
 export const serviceGetPosts = async () => {
   const q = `SELECT p.*, u.username 
               FROM vm_posts p JOIN vm_users u 
-              ON p.uid = u.id`;
+              ON p.uid = u.id
+              ORDER BY p.id desc`;
 
   return db.query(q);
 };
