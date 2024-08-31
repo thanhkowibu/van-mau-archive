@@ -25,7 +25,8 @@ To run the project, follow these steps:
 
 1. **Clone the repository:**
 ```
-git clone https://github.com/thanhkowibu/van-mau-archive.git cd van-mau-archive
+git clone https://github.com/thanhkowibu/van-mau-archive.git
+cd van-mau-archive
 ```
 
 
